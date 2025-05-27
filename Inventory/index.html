@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 95%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            float: center;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .center {
+            text-align: center;
+            max-width: 96%;
+            margin-left: 2%;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="center">
+        <img src="images/logo.PNG" alt="DESCO LOGO">
+    </div>
+    <div class="container">
+        <h2 class="center">Login</h2>
+        <form id="loginForm" method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div>
+                <input type="checkbox" id="rememberMe" name="rememberMe" style="display: inline-block; margin-right: 2%; margin-left: -0.1%;">
+                <label for="rememberMe"  style="display: inline-block;">Remember Me</label>
+            </div>
+            <div class="form-group center">
+                <button type="submit">Login</button>
+            </div>
+        </form>
+        <h3 class="center" style="color: red;" id="msg"></h3>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="jquery.cookie.js"></script>
+<script>
+    $(document).ready(function () {
+        fedbLoc=""
+
+        if ($.cookie("userData"))  window.location.href = fedbLoc+"main.html";
+
+
+        $("#loginForm").submit(function (event) {
+            event.preventDefault();
+            var rememberMeCheckbox = document.getElementById("rememberMe");
+            // Send an AJAX POST request
+            var settings = {
+                "url": "https://script.google.com/macros/s/AKfycbz36im87jKmbBV6-EbvPjhla1oX8CmLHq_AU9MDytxZQO-FX0M2wGHtevw3Iu9oR6AI/exec?reqType=login",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                "data": {
+                    "name": $("#username").val(),
+                    "password": $("#password").val()
+                }
+            };
+
+            $.ajax(settings).done(function (response) {
+                response = JSON.parse(response);
+                if (response[0]==200){
+                    var userData =JSON.stringify({
+                        username: $("#username").val(),
+                        role: response[2],
+                        dept: response[3]
+                    });
+
+                    if (rememberMeCheckbox) {
+                        $.cookie("userData",userData,30);
+                    }
+                    else $.cookie("userData",userData,0.02);
+                    window.location.href = fedbLoc+"main.html";
+                }
+                else{
+                    alert("Login Failed!!!");
+                    $("#msg").text("!!! "+response[1]+" !!!");
+                }
+            });
+        });
+    });
+</script>
+
+</html>

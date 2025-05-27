@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Sorting and Filtering</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Table Sorting and Filtering</h2>
+    
+    <!-- Filter input -->
+    <input type="text" id="filterInput" placeholder="Filter by Name" onchange="filterTab('myTable','filterInput',0)">
+
+    <!-- Table -->
+    <table id="myTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>John Doe</td>
+                <td>30</td>
+                <td>New York</td>
+            </tr>
+            <tr>
+                <td>Jane Smith</td>
+                <td>25</td>
+                <td>Los Angeles</td>
+            </tr>
+            <tr>
+                <td>Albert Johnson</td>
+                <td>28</td>
+                <td>Chicago</td>
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+</body>
+<script src="tableHandler.js"></script>
+<script>
+    function filterTab(tableId, filterInput, column){
+        filterTable(tableId, filterInput, column);
+        sortTableRows(tableId, column)
+    }
+    $(document).ready(function() {
+
+});
+
+</script>
+</html>

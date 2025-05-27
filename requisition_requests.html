@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ABB Relay Card Management System">
+    <meta charset="UTF-8">
+    <title>ABB Relay Card Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 6px 12px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            width: 300px;
+            border-radius: 5px;
+        }
+
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .printable-form {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            width: 400px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="content" style="display: block;">
+    <h2>ABB Relay Card Management</h2>
+    <table id="data-table">
+        <thead>
+            <tr>
+				<th>Request ID</th>
+                <th>Date</th>
+                <th>Requester</th>
+                <th>Sub Station</th>
+                <th>Panel No</th>
+                <th>Relay Model</th>
+                <th>Serial No</th>
+                <th>Required Card</th>
+                <th>Allocation</th>
+                <th>Return</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Allocate Modal -->
+    <div class="modal" id="allocateModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('allocateModal')">×</span>
+            <h3>Allocate Card</h3>
+            <input type="text" id="allocatedSerial" placeholder="Card Serial Number">
+            <textarea id="allocationComments" placeholder="Comments"></textarea>
+            <button onclick="submitForm('allocate')">Submit</button>
+        </div>
+    </div>
+
+    <!-- Return Modal -->
+    <div class="modal" id="returnModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('returnModal')">×</span>
+            <h3>Initiate Return</h3>
+            <input type="text" id="returnSerial" placeholder="Return Serial No">
+            <textarea id="returnComments" placeholder="Reason for return"></textarea>
+            <button onclick="submitForm('return')">Submit</button>
+        </div>
+    </div>
+
+    <!-- Printable Form -->
+    <div class="printable-form" id="printableForm">
+        <h3>Printable Form</h3>
+		
+        <p><strong>Request Date:</strong> <span id="requestDate"></span></p>
+        <p><strong>Requester Name:</strong> <span id="requesterName"></span></p>
+        <p><strong>Sub Station Name:</strong> <span id="subStationName"></span></p>
+        <p><strong>Panel No:</strong> <span id="panelNo"></span></p>
+        <p><strong>Relay Model:</strong> <span id="relayModel"></span></p>
+        <p><strong>Existing Relay Serial No:</strong> <span id="existingRelaySerial"></span></p>
+        <p><strong>Required Card:</strong> <span id="requiredCard"></span></p>
+        <p><strong>Allocated Card Serial:</strong> <span id="allocatedCardSerial"></span></p>
+        <p><strong>Allocation Date:</strong> <span id="allocationDate"></span></p>
+        <p><strong>Return Product Name:</strong> <span id="returnProductName"></span></p>
+        <p><strong>Return Product Serial No:</strong> <span id="returnProductSerial"></span></p>
+        <p><strong>Return Date:</strong> <span id="returnDate"></span></p>
+        <p><strong>Returner:</strong> <span id="returner"></span></p>
+        <p><strong>Return Location:</strong> <span id="returnLocation"></span></p>
+        <button onclick="printForm()">Print</button>
+        <button onclick="closeModal('printableForm')">Close</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    const storedUsername = "admin";
+    const storedPasswordHash = "07aeb4864e46bc72f842304e0efb417a94c0c5113413e34a40bf2c228920d3cf";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyexMiEnvv-IbN6_9IJRLd4a9aB1nK5O3tSWnLni0CezL3eif9sbROY4CjHv9HvHaHhLA/exec";
+
+    let currentRowData = {};  // Store current row data for allocation
+    let currentRowIndex = null;  // Store the row index for later updates
+
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function authenticate() {
+        const username = prompt("Enter username:");
+        const password = prompt("Enter password:");
+
+        if (!username || !password) {
+            alert("Login cancelled.");
+            document.body.innerHTML = "<h2>Access Denied</h2>";
+            return;
+        }
+
+        const hashedInput = await hashPassword(password);
+
+        if (username === storedUsername && hashedInput === storedPasswordHash) {
+            document.getElementById("content").style.display = "block";
+            fetchData();
+        } else {
+            alert("Invalid credentials!");
+            document.body.innerHTML = "<h2>Access Denied</h2>";
+        }
+    }
+
+    function openModal(id) {
+        document.getElementById(id).style.display = 'flex';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    function submitForm(type) {
+        if (type === 'allocate') {
+            currentRowData.allocatedCardSerial = document.getElementById('allocatedSerial').value;
+            currentRowData.allocationDate = new Date().toLocaleDateString();
+            alert("Allocation submitted!");
+
+            // Populate the printable form with the allocation details
+            document.getElementById("requestDate").innerText = currentRowData.requestDate;
+            document.getElementById("requesterName").innerText = currentRowData.requesterName;
+            document.getElementById("subStationName").innerText = currentRowData.subStationName;
+            document.getElementById("panelNo").innerText = currentRowData.panelNo;
+            document.getElementById("relayModel").innerText = currentRowData.relayModel;
+            document.getElementById("existingRelaySerial").innerText = currentRowData.existingRelaySerial;
+            document.getElementById("requiredCard").innerText = currentRowData.requiredCard;
+            document.getElementById("allocatedCardSerial").innerText = currentRowData.allocatedCardSerial;
+            document.getElementById("allocationDate").innerText = currentRowData.allocationDate;
+
+            openModal('printableForm');
+        }
+
+        // Close allocation modal
+        closeModal(type === 'allocate' ? 'allocateModal' : 'returnModal');
+        updateTableRow();
+    }
+
+    function updateTableRow() {
+        // Find the row and update its allocation status
+        const row = document.querySelectorAll("#data-table tbody tr")[currentRowIndex];
+        const allocationCell = row.querySelector('td:nth-child(8)');
+        allocationCell.innerHTML = currentRowData.allocatedCardSerial;
+        const actionCell = row.querySelector('td:last-child');
+        actionCell.innerHTML = `<button onclick="currentRowIndex=${currentRowIndex};openModal('returnModal')">Initiate Return</button>`;
+    }
+
+    async function fetchData() {
+        try {
+            const response = await fetch(scriptURL);
+            const result = await response.json();
+            const tbody = document.querySelector("#data-table tbody");
+            tbody.innerHTML = "";
+
+            result.forEach((row, index) => {
+                const tr = document.createElement("tr");
+
+                let actionButtons = '';
+                if (!row["Allocation"]) {
+                    actionButtons = `<button onclick="currentRowIndex=${index};currentRowData=${JSON.stringify(row)};openModal('allocateModal')">Allocate</button>`;
+                } else if (!row["Return"]) {
+                    actionButtons = `<button onclick="currentRowIndex=${index};currentRowData=${JSON.stringify(row)};openModal('returnModal')">Initiate Return</button>`;
+                }
+
+                tr.innerHTML =
+					`<td>${row["RequestID"] || ""}</td>
+                    <td>${row["Date"] || ""}</td>
+                    <td>${row["Requester Name"] || ""}</td>
+                    <td>${row["Sub Station Name"] || ""}</td>
+                    <td>${row["Panel No"] || ""}</td>
+                    <td>${row["Relay Model"] || ""}</td>
+                    <td>${row["Existing Relay Serial Number"] || ""}</td>
+                    <td>${row["Required Card"] || ""}</td>
+                    <td>${row["Allocation"] || ""}</td>
+                    <td>${row["Return"] || ""}</td>
+                `;
+
+                const actionCell = document.createElement("td");
+                actionCell.innerHTML = actionButtons;
+                tr.appendChild(actionCell);
+                tbody.appendChild(tr);
+            });
+        } catch (err) {
+            alert("Failed to fetch data.");
+            console.error(err);
+        }
+    }
+
+    authenticate();
+
+    function printForm() {
+        window.print();
+    }
+</script>
+</body>
+</html>

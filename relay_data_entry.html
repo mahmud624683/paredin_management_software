@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Relay Selection Form</title>
+  <style>
+    :root {
+      --input-padding: 12px 14px;
+      --border-color: #dadce0;
+      --focus-color: #2196F3;
+    }
+
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      background: #f1f1f1;
+      color: #202124;
+    }
+
+    .form-container {
+      max-width: min(90%, 800px);
+      margin: 40px auto;
+      padding: 40px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+
+    h2 {
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 400;
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--focus-color);
+    }
+
+    .form-group {
+      margin-bottom: 2rem;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      color: #5f6368;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    label:after {
+      content: " *";
+      color: #d93025;
+      visibility: hidden;
+    }
+
+    label[required]:after {
+      visibility: visible;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      padding: var(--input-padding);
+      font-size: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background: white;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    select:hover, input[type="text"]:hover {
+      border-color: #8a8d91;
+    }
+
+    select:focus, input[type="text"]:focus {
+      border-color: var(--focus-color);
+      outline: none;
+      box-shadow: 0 0 0 2px #e8f0fe;
+    }
+
+    .note {
+      font-size: 0.75rem;
+      color: #70757a;
+      margin-top: 0.25rem;
+      display: block;
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+    }
+
+    /* Ensure consistent box model */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+	
+	.error-message {
+    color: #d93025;
+    font-size: 0.75rem;
+    margin-top: 4px;
+    display: none;
+  }
+  .invalid {
+    border-color: #d93025 !important;
+  }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Relay Data Entry Form</h2>
+
+    <div class="form-group">
+      <label for="substation" required>Substation</label>
+      <input 
+		type="text" 
+		id="substationInput" 
+		name="substation" 
+		list="substationList"
+		placeholder="Type to search..."
+		autocomplete="off"
+		required
+	  >
+	  <datalist id="substationList">
+		<option value="Spare - Annex">
+		<option value="Aftabnagar Grid">
+		<option value="Basundhara Grid">
+		<option value="Banani Grid">
+		<option value="Purbachal Grid">
+		<option value="Tongi-3 Millgate Grid">
+		<option value="Uttara Grid">
+		<option value="Uttara Sector-18 Grid">
+		<option value="ADA SS">
+		<option value="Aftabnagar SS">
+		<option value="Agargaon-1 SS">
+		<option value="AGARGAON-2 SS">
+		<option value="Ahsania Mission Cancer Hospital SS">
+		<option value="Banani SS">
+		<option value="Baridhara SS">
+		<option value="Barua SS">
+		<option value="Bashundhara Block I SS">
+		<option value="Basundhara SS">
+		<option value="Baunia SS">
+		<option value="CAAB SS">
+		<option value="Center Point SS">
+		<option value="Dakshin Khan SS">
+		<option value="Dhamalkot SS">
+		<option value="Digun SS">
+		<option value="DOHS-1 SS">
+		<option value="Eastern Housing SS">
+		<option value="Gulshan-2 SS">
+		<option value="Gulshan1 SS">
+		<option value="Health Science SS">
+		<option value="Joarshahara SS">
+		<option value="kafrul SS">
+		<option value="kakoli SS">
+		<option value="Kazipara SS">
+		<option value="Lake City Concord SS">
+		<option value="Merul Badda SS">
+		<option value="Mirpur DOHS-2 SS">
+		<option value="Mirpur Old SS">
+		<option value="Mirpur Section-6 SS">
+		<option value="Mirpur-2 SS (SS-2)">
+		<option value="Mohakhali DOHS SS">
+		<option value="Mohakhali ICDDRB SS">
+		<option value="New Tongi Grid SS">
+		<option value="Niketon SS">
+		<option value="Nikunja SS">
+		<option value="Purbachal SS">
+		<option value="Rakin City SS">
+		<option value="Satarkul (United City) SS">
+		<option value="Sholahati SS">
+		<option value="Tongi 1 SS">
+		<option value="Tongi BSCIC New SS">
+		<option value="Tongi Sataish SS">
+		<option value="Tongi-2 SS">
+		<option value="Uttara Sector 14 SS">
+		<option value="Uttara SS">
+		<option value="Uttarkhan Promi SS">
+		<option value="Banani-2 11kV Sw">
+		<option value="Basundhara 11kV Sw">
+		<option value="BTCL 11kV Sw">
+		<option value="Cant. Park 11kV Sw">
+		<option value="Civil Aviation 11kV Sw">
+		<option value="Ibrahimpur 11kV Sw">
+		<option value="Kalachadpur 11kV Sw">
+		<option value="Mirpur SS-3 Sw">
+		<option value="Paikpara 11kV Sw">
+		<option value="Pallabi 11kV Sw">
+		<option value="Renata 11kV Sw">
+		<option value="Stadium 11kV Sw">
+		<option value="Tongi OLD 33kV Sw">
+		<option value="Uttara 11kV Sw">
+	  </datalist>
+    </div>
+
+    <div class="form-group">
+      <label for="voltage" required>Voltage Level</label>
+      <select id="voltage" required>
+        <option value="">Choose</option>
+		<option>132 kV</option>
+		<option>33 kV</option>
+		<option>11 kV</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="panel" required>Panel No</label>
+      <input type="text" id="panel" placeholder="Format- 132kV: E _ _ (Example: E01), 33kV: H _ _, 11kV: K _ _" required pattern="^[EHK][0-9]{2}$">
+    </div>
+
+    <div class="form-group">
+      <label for="company" required>Company</label>
+      <select id="company" required onchange="populateModels()">
+        <option value="">Choose</option>
+		<option value="ABB">ABB</option>
+		<option value="Siemens">Siemens</option>
+		<option value="MiCOM">MiCOM</option>
+		<option value="VAMP">VAMP</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="model" required>Model</label>
+      <select id="model" required>
+        <option value="">Choose a company first</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+	  <label for="serialNo" required>Serial No</label>
+	  <input type="text" id="serialNo" name="serialNo" required>
+	  <div class="error-message" id="serialError">Invalid serial format for selected model</div>
+	</div>
+
+	<div class="form-group">
+	  <label for="orderingCode" required>Ordering Code</label>
+	  <input type="text" id="orderingCode" name="orderingCode" required>
+	  <div class="error-message" id="orderingError">Invalid ordering code format for selected model</div>
+	</div>
+
+    <div class="form-group">
+      <label for="status" required>Status</label>
+      <select id="status" name="status" required>
+        <option value="Active">Active</option>
+		<option value="Faulty">Faulty</option>
+		<option value="Inactive">Inactive</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="remarks">Remarks</label>
+      <input type="text" id="remarks" name="remarks">
+    </div>
+  </div>
+
+  <script>
+    // JavaScript remains the same
+	//Relay model selection 
+    const models = {
+      ABB: ['REF611', 'REF615', 'RET615'],
+      Siemens: ['7SJ80', '7UT85', '7UM62'],
+      MiCOM: ['P123', 'P142', 'P441'],
+      VAMP: ['VAMP 40', 'VAMP 255', 'VAMP 300']
+    };
+	// Add model regex patterns
+	const modelRegex = {
+	  // ABB Models
+	  REF611: { serial: /^1[A-Z]{3}9\d{7}$/, ordering: /^REF611[A-Z0-9]{12}$/ },
+	  REF615: { serial: /^REF\d{6}$/, ordering: /^OC-REF6-\d{3}$/ },
+	  RET615: { serial: /^RET\d{6}$/, ordering: /^OC-RET6-\d{3}$/ },
+
+	  // Siemens Models
+	  '7SJ80': { serial: /^SIEMENS-\d{4}[A-Z]{2}$/, ordering: /^OC-SIE-\d{5}$/ },
+	  '7UT85': { serial: /^UT85-\d{6}$/, ordering: /^OC-UT85-\d{4}$/ },
+
+	  // MiCOM Models
+	  P123: { serial: /^MICOM-\d{4}[A-Z]$/, ordering: /^OC-MC-\d{5}$/ },
+	  P142: { serial: /^P142-\d{6}$/, ordering: /^OC-P142-\d{4}$/ },
+
+	  // VAMP Models
+	  'VAMP 40': { serial: /^VAMP-40-\d{4}$/, ordering: /^OC-V40-\d{4}$/ },
+	  'VAMP 255': { serial: /^VAMP-255-\d{4}[A-Z]$/, ordering: /^OC-V255-\d{3}$/ }
+	};
+
+    function populateModels() {
+      const company = document.getElementById('company').value;
+      const modelSelect = document.getElementById('model');
+      modelSelect.innerHTML = '';
+
+      if (models[company]) {
+        models[company].forEach(model => {
+          const opt = document.createElement('option');
+          opt.value = model;
+          opt.textContent = model;
+          modelSelect.appendChild(opt);
+        });
+      } else {
+        const opt = document.createElement('option');
+        opt.textContent = 'Choose a company first';
+        modelSelect.appendChild(opt);
+      }
+    }
+	
+	//Substation selection controller
+	const substationInput = document.getElementById('substationInput');
+	  const substationOptions = Array.from(document.getElementById('substationList').options).map(opt => opt.value);
+
+	  substationInput.addEventListener('blur', function(e) {
+		if (!substationOptions.includes(e.target.value)) {
+		  e.target.value = '';
+		  alert('Please select a valid option from the list');
+		}
+	  });
+	
+	
+	// Retriving patterns
+	let currentPatterns = { serial: "", ordering: "" };
+	function updateCurrentPattern(){
+		let modelValue = document.getElementById('model').value;
+		if (modelValue != "Choose a company first" && modelValue !=""){
+			currentPatterns = modelRegex[modelValue];
+		}
+		return 0;
+	}
+	
+	// Serial and Order code validation
+	// Validation functions
+	function validateInput(input, pattern, errorElement) {
+		if(pattern === "") {
+			alert("Select a relay model first");
+			input.value = "";
+		}
+		else{
+			const isValid = pattern.test(input.value);
+			input.classList.toggle('invalid', !isValid);
+			errorElement.style.display = !isValid ? 'block' : 'none';
+			return isValid;
+		}
+		return 0;
+	  }
+
+	  // Event listeners
+    document.getElementById('serialNo').addEventListener('change', function() {
+		updateCurrentPattern();
+		validateInput(this, currentPatterns.serial, document.getElementById('serialError'));
+	});
+
+    document.getElementById('orderingCode').addEventListener('change', function() {
+		updateCurrentPattern();
+		validateInput(this, currentPatterns.ordering, document.getElementById('orderingError'));
+	});
+
+	  // Form submission validation
+	  /*document.querySelector('form').addEventListener('submit', function(e) {
+		const serialValid = validateInput(
+		  document.getElementById('serialNo'),
+		  currentPatterns.serial,
+		  document.getElementById('serialError')
+		);
+		
+		const orderingValid = validateInput(
+		  document.getElementById('orderingCode'),
+		  currentPatterns.ordering,
+		  document.getElementById('orderingError')
+		);
+
+		if (!serialValid || !orderingValid) {
+		  e.preventDefault();
+		  // Focus on first invalid field
+		  if (!serialValid) document.getElementById('serialNo').focus();
+		  else if (!orderingValid) document.getElementById('orderingCode').focus();
+		}
+	  });*/
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 95%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button[type="submit"] {
+      background-color: #007bff;
+      color: #ffffff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+
+    .center {
+      text-align: center;
+      max-width: 96%;
+      margin-left: 2%;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    #msg {
+      color: red;
+    }
+
+    /* New overlay and spinner */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: 999;
+      display: none;
+    }
+
+    #spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #spinner img {
+      width: 50px;
+    }
+
+    /* Prevent interaction when loading */
+    .disabled {
+      pointer-events: none;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="center">
+    <img src="images/logo.PNG" alt="DESCO LOGO">
+  </div>
+
+  <div class="container" id="content">
+    <h2 class="center">Login</h2>
+    <form id="loginForm" method="POST" autocomplete="on">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+      </div>
+      <div>
+        <input type="checkbox" id="rememberMe" name="rememberMe"
+          style="display: inline-block; margin-right: 2%; margin-left: -0.1%;">
+        <label for="rememberMe" style="display: inline-block;">Remember Me</label>
+      </div>
+      <div class="form-group center">
+        <button type="submit" id="loginBtn">Login</button>
+      </div>
+    </form>
+    <h3 class="center" id="msg"></h3>
+  </div>
+
+  <!-- Overlay for loading -->
+  <div id="overlay">
+    <div id="spinner">
+      <img src="images/loading.gif" alt="Loading...">
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="jquery.cookie.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      const mainPage = window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + "main.html";
+
+      // Redirect if already logged in
+      if ($.cookie("gspeainfo")) {
+        window.location.href = mainPage;
+        return;
+      }
+
+      $("#loginForm").submit(function (event) {
+        event.preventDefault();
+
+        // Disable interaction
+        $("#overlay").show();
+        $("#content").addClass("disabled");
+        $("#msg").text("");
+
+        const username = $("#username").val();
+        const password = $("#password").val();
+        const rememberMe = $("#rememberMe").is(":checked");
+		if (rememberMe){
+			expiary = 7*24*60;
+		}else{
+			expiary = 60;
+		}
+
+        $.ajax({
+          url: "https://script.google.com/macros/s/AKfycbxcdpGqN3-bp6G_0c7e8IO1I__wxXWFAMlCPwtLn4UhKiY8g7MEbo0M_StXJAltiZnzKQ/exec?reqType=login",
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          data: {
+            name: username,
+            password: password,
+			      expiary: expiary
+          },
+          success: function (response) {
+            try {
+              const data = typeof response === "string" ? JSON.parse(response) : response;
+
+              if (data[0] == 200) {
+                // Store token and user info in cookies
+                const userInfo = {
+                  token: data[4],
+                  role: data[2],
+                  dept: data[3],
+                  username: data[5]
+                };
+                $.cookie("gspeainfo", JSON.stringify(userInfo), { expires: expiary });
+                window.location.href = "main.html";
+
+              } else {
+                $("#msg").text("Login failed: " + data[1]);
+              }
+            } catch (e) {
+              $("#msg").text("Unexpected response format.");
+            }
+          },
+          error: function () {
+            $("#msg").text("Login request failed.");
+          },
+          complete: function () {
+            // Re-enable interaction
+            $("#overlay").hide();
+            $("#content").removeClass("disabled");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
+

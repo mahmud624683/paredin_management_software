@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Relay Management System</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f7fa;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 15px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+
+    #userInfo {
+      text-align: right;
+      font-size: 0.9rem;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      max-width: 800px;
+      margin: 40px auto;
+    }
+
+    .dashboard-button {
+      padding: 30px;
+      background-color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2c3e50;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 150px;
+    }
+
+    .dashboard-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      background-color: #007bff;
+      color: white;
+    }
+
+    .dashboard-button i {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    button {
+      padding: 8px 20px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background-color: #f8f9fa;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #e9ecef;
+    }
+
+    @media (max-width: 768px) {
+      .button-grid {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+      }
+      
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      #userInfo {
+        width: 100%;
+        margin-top: 15px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="header-container">
+    <h1>Relay Management Dashboard</h1>
+    <div id="userInfo">
+      <strong>User:</strong> <span id="username"></span><br>
+      <strong>Dept:</strong> <span id="dept"></span><br>
+      <strong>Role:</strong> <span id="role"></span><br>
+      <div style="margin-top: 10px;">
+        <button onclick="changePass()">Change Password</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="button-grid">
+    <button class="dashboard-button" onclick="location.href='https://forms.gle/T8PwjuE8hqsRK2zA9'">
+      <i class="fas fa-exclamation-circle"></i>
+      Relay Complain Form
+    </button>
+    
+    <button class="dashboard-button" onclick="location.href='https://forms.gle/GZxwPKKmNFhCGaUcA'">
+      <i class="fas fa-tasks"></i>
+      Relay Allocation Form
+    </button>
+    
+    <button class="dashboard-button" onclick="location.href='#complain-management'">
+      <i class="fas fa-clipboard-check"></i>
+      Relay Complain Management
+    </button>
+    
+    <button class="dashboard-button" onclick="location.href='#allocation-management'">
+      <i class="fas fa-project-diagram"></i>
+      Relay Allocation Management
+    </button>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    const userInfo = JSON.parse($.cookie("gspeainfo") || "{}");
+    if (!userInfo.token) {
+      window.location.href = "login.html";
+    }
+
+    document.getElementById("username").textContent = userInfo.username || "N/A";
+    document.getElementById("dept").textContent = userInfo.dept || "N/A";
+    document.getElementById("role").textContent = userInfo.role || "N/A";
+
+    function changePass() {
+      // Add password change functionality
+    }
+  </script>
+</body>
+</html>

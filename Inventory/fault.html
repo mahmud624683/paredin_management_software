@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #7c8997;
+            color: #fff;
+            text-align: right;
+            height: fit-content;
+        }
+
+        .header-table {
+            width: 90%;
+            border-collapse: collapse;
+            margin-left: 8%;
+            margin-right: 2%;
+        }
+
+        .header-cell-80 {
+            width: 80%;
+            padding: 10px;
+            color: #fff;
+            text-align: left;
+        }
+
+        .header-cell-20 {
+            width: 20%;
+            padding: 10px;
+            color: #fff;
+            text-align: right;
+        }
+
+        .user-profile {
+            text-align: right;
+        }
+
+        .user-profile .username {
+            font-weight: bold;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .user-profile .role {
+            font-size: 12px;
+            color: #f3efef;
+        }
+        .user-profile .dept {
+            font-size: 12px;
+            color: #f3efef;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(53, 52, 52, 0.1);
+        }
+
+        .content {
+            padding: 20px;
+        }
+        /* Styling for the drawer menu */
+        .drawer {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #7c8997;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 10%;
+        }
+
+        .drawer a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #fff;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .drawer a:hover {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        .drawer .close-button {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* Styling for the button to open the drawer */
+        .menu-button {
+            font-size: 30px;
+            cursor: pointer;
+            padding: 15px;
+            position: fixed;
+            top: 2%;
+            left: 3%;
+            z-index: 2;
+            color: #ffffff;
+            
+        }
+        /* Add your table-specific styling here */
+        .existing-table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 2% auto;
+        }
+
+        .existing-table th,
+        .existing-table td {
+            border: 1px solid #ccc;
+            padding: 1%;
+            text-align: center;
+        }
+
+        .existing-table th {
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        .existing-table tr:nth-child(odd) {
+            background-color: #f2f2f2; /* Set background color for odd rows */
+        }
+
+        .existing-table tr:nth-child(even) {
+            background-color: #ffffff; /* Set background color for even rows */
+        }
+
+        /* Style for the caption (toggle button) */
+        .existing-table caption {
+            text-align: left; 
+            padding: 0.5%; 
+            font-size: 24px;
+            color: #fff8f8; 
+            background-color: #469699;
+            padding: 10px;
+            cursor: pointer; /* Add pointer cursor to indicate interactivity */
+        }
+
+        .captionHover:hover {
+            background-color: #206dac; /* Change background color on hover */
+        }
+
+        /* Style for the up and down arrow icons */
+        .arrow-up {
+            display: none; /* Initially hidden */
+            margin-left: 5px;
+        }
+
+        .arrow-down {
+            margin-left: 5px;
+        }
+
+        .button-10:hover {
+            background-color: #469699;
+        }
+        .button-10 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 6px 14px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        color: #fff;
+        background: linear-gradient(180deg, #6299ec 0%, #588ff5 100%);
+        background-origin: border-box;
+        box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        }
+
+        .button-10:focus {
+        box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+        outline: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td class="header-cell-80">
+                    <!-- Content for the 80% width column -->
+                    <h1>DESCO Fault Tracking System</h1>
+                </td>
+                <td class="header-cell-20">
+                    <!-- Content for the 20% width column -->
+                    <div class="user-profile">
+                        <span class="username" style="cursor: pointer;" ></span><br>
+                        <span class="role"></span><br>
+                        <span class="dept"></span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- Button to open the drawer -->
+    <div class="menu-button" onclick="openDrawer()">&#9776;</div>
+
+    <!-- The drawer menu -->
+    <div id="myDrawer" class="drawer">
+        <span class="close-button" onclick="closeDrawer()">&times;</span>
+        <a href="main.html">Equipment Tracking</a>
+        <a href="editProf.html">Edit Profile</a>
+        <a href="#" id="logout">Logout</a>
+    </div>
+    <div>
+        <table class="existing-table">
+            <caption id="captionFault" class="captionHover" onclick="toggleTable($('#addFault'),$('#captionFault'),$('#btnFault'))">
+                Add a New Fault
+               
+                <span class="arrow-down" style="float: right;">&#9660;</span> <!-- Down arrow icon -->
+                <span class="arrow-up" style="float: right;">&#9650;</span>   <!-- Up arrow icon -->
+            </caption>
+            <tr id="btnFault" style="display: none;">
+                <td>
+                    <button class="button-10" style="float: left;"> Reset Data</button>
+                </td>
+                <td>
+                    <button class="button-10" style="float: right;"> Send Data</button>
+                </td>
+            </tr>
+
+            <table class="existing-table" id="addFault" style="display: none;">
+                <tr>
+                    <th>Name</th>
+                </tr>
+                <tr>
+                    <td>John</td>
+                </tr>  
+            </table>
+        </table>
+
+        <table class="existing-table">
+            <caption id="captionHistory" class="captionHover" onclick="toggleTable($('#historyTable'),$('#captionHistory'),$('#btnHistory'))">
+                Show the fault history
+                <span class="arrow-down" style="float: right;">&#9660;</span> <!-- Down arrow icon -->
+                <span class="arrow-up" style="float: right;">&#9650;</span>   <!-- Up arrow icon -->
+            </caption>
+            <tr id="btnHistory" style="display: none;">
+                <td>
+                    <button class="button-10" style="float: right;"> Retrieve Data</button>
+                </td>
+            </tr>
+            <table class="existing-table" id="historyTable" style="display: none;">
+                <tr>
+                    <th>Name</th>
+                </tr>
+                <tr>
+                    <td>John</td>
+                </tr>  
+            </table>
+        </table>
+        
+    </div>
+</body>
+<script>
+    function openDrawer() {
+        document.getElementById("myDrawer").style.width = "20%";
+        document.querySelector(".menu-button").style.display = "none"
+    }
+
+    function closeDrawer() {
+        document.getElementById("myDrawer").style.width = "0";
+        $(".menu-button").delay(300).fadeIn();
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="jquery.cookie.js"></script>
+<script src="tableHandler.js"></script>
+
+<script>
+    function toggleTable(table,caption,btn) {
+            table.toggle();
+            caption.find(" .arrow-down , .arrow-up").toggle();
+            btn.toggle();
+            getNewFaultFormData();
+            
+        } 
+    function getNewFaultFormData(){
+        alert("new");
+    }
+    $(document).ready(function () {
+        fedbLoc="";
+        try {
+            userData = JSON.parse($.cookie("userData"));
+        } catch (error) {
+            $.removeCookie("userData");
+            window.location.href = fedbLoc+"index.html";
+        }
+        
+        $(".username").text(userData["username"]);
+        $(".role").text(userData["role"]);
+        $(".dept").text(userData["dept"]);
+        
+        $("#logout").click(function(){
+            $.removeCookie("userData");
+            window.location.href = fedbLoc+"index.html";
+        });  
+        
+    });
+</script>
+
+</html>

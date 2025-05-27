@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Work Log Approval</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    #userInfo {
+      text-align: right;
+      font-size: 0.9rem;
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .approve-all-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+    #approveAllBtn {
+      padding: 8px 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #approveAllBtn:hover {
+      background-color: #0056b3;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background-color: #fff;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .hidden-col {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-container">
+    <h2> </h2>
+    <div id="userInfo">
+      <strong>User:</strong> <span id="username"></span><br>
+      <strong>Dept:</strong> <span id="dept"></span><br>
+      <strong>Role:</strong> <span id="role"></span><br><br>
+      <div class="approve-all-container">
+        <button onclick="changePass()">Change Password</button>
+      </div><br>
+
+    </div>
+  </div>
+  <div class="header-container" style="margin-bottom: -1%;">
+    <h2>Work Logs- </h2>
+    <div class="approve-all-container">
+      <button id="approveAllBtn" onclick="approveAll()">Approve All</button>
+    </div>
+  </div>
+  
+  <table id="infoTable">
+    <thead>
+      <tr>
+        <th class="hidden-col">Row</th>
+        <th>Date</th>
+        <th>Site</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Teammates</th>
+        <th>Approval</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="jquery.cookie.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+  <script>
+    const mainUrl = "https://script.google.com/macros/s/AKfycbxcdpGqN3-bp6G_0c7e8IO1I__wxXWFAMlCPwtLn4UhKiY8g7MEbo0M_StXJAltiZnzKQ/exec?";
+    let tableData = [];
+
+    const userInfo = JSON.parse($.cookie("gspeainfo") || "{}");
+    if (!userInfo.token) {
+      window.location.href = "login.html";
+    }
+
+    document.getElementById("username").textContent = userInfo.username || "N/A";
+    document.getElementById("dept").textContent = userInfo.dept || "N/A";
+    document.getElementById("role").textContent = userInfo.role || "N/A";
+
+    function fetchData() {
+      const token = userInfo.token;
+      if (!token) {
+        alert("Session expired. Please log in again.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      fetch(mainUrl + "reqType=data", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ 
+          dept: userInfo.dept,
+          token: token 
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 200) {
+          tableData = data.data;
+          renderTable();
+        } else {
+          alert(data.message || "Error fetching data.");
+          window.location.href = "index.html";
+        }
+      })
+      .catch(err => {
+        alert("Network error. Try again.");
+        console.error(err);
+      });
+
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+      for (const row of tableData) {
+        const tr = document.createElement("tr");
+        const date = new Date(row.Date).toLocaleDateString();
+        const approved = row.Approved.trim();
+
+        tr.innerHTML = `
+          <td class="hidden-col">${row.OriginRow}</td>
+          <td>${date}</td>
+          <td>${row.Site || ""}</td>
+          <td>${row.Type || ""}</td>
+          <td>${row.Description || ""}</td>
+          <td>${row["Teammates "] || ""}</td>
+          <td>${approved ? "Approved" : `<button onclick="approve('${row.OriginRow}')">Approve</button>`}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function approve(rowId) {
+      const token = userInfo.token;
+      if (!token) {
+        alert("Session expired. Please log in again.");
+        window.location.href = "login.html";
+        return;
+      }
+      fetch(mainUrl + "reqType=approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ token, action: "approve", row: rowId })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 200) {
+          fetchData(); // Refresh table
+        } else {
+          alert(res.message || "Approval failed.");
+        }
+      });
+    }
+
+    function approveAll() {
+      const token = userInfo.token;
+      if (!token) {
+        alert("Session expired. Please log in again.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const rowsToApprove = tableData
+        .filter(r => !r.Approved.trim())
+        .map(r => r.OriginRow);
+
+      if (!rowsToApprove.length) return alert("No unapproved entries.");
+
+      fetch("https://script.google.com/macros/s/YOUR_APPROVE_ENDPOINT/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ token, action: "approve_all", rows: JSON.stringify(rowsToApprove) })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === 200) {
+          fetchData(); // Refresh table
+        } else {
+          alert(res.message || "Bulk approval failed.");
+        }
+      });
+    }
+
+    window.onload = fetchData;
+  </script>
+</body>
+</html>

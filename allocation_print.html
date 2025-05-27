@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Relay Allocation Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 210mm;
+      margin: auto;
+      padding: 10mm;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    h2, h3, h4 {
+      margin: 4px 0;
+    }
+
+    .section {
+      margin-top: 12px;
+      padding: 8px 10px;
+      border: 1px dashed #999;
+    }
+
+    .label {
+      font-weight: bold;
+      display: inline-block;
+      width: 210px;
+      vertical-align: top;
+    }
+
+    .row {
+      margin-bottom: 6px;
+    }
+
+    .divider {
+      margin: 16px 0;
+      border-top: 1.5px dashed black;
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 10mm;
+      }
+
+      body {
+        padding: 0;
+        margin: 0;
+      }
+
+      button {
+        display: none;
+      }
+
+      .section {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button onclick="window.print()">🖨️ Print This Page</button>
+
+  <h2 style="text-align: center;">Relay Card Allocation & Return Report</h2>
+
+  <!-- GSPEA Part -->
+  <div class="section">
+    <h3 style="text-decoration: underline; text-align: center;">GSPEA Part</h3>
+
+    <!-- 1. Request Info -->
+    <div class="section">
+      <h4>1. Component Requisition Info</h4>
+      <div class="row"><span class="label">Request ID:</span> <span id="gspea-request-id"></span></div>
+      <div class="row"><span class="label">Request Date:</span> <span id="gspea-request-date"></span></div>
+      <div class="row"><span class="label">Requester Name:</span> <span id="gspea-requester-name"></span></div>
+      <div class="row"><span class="label">Sub Station Name:</span> <span id="gspea-substation-name"></span></div>
+      <div class="row"><span class="label">Panel No:</span> <span id="gspea-panel-no"></span></div>
+      <div class="row"><span class="label">Relay Model:</span> <span id="gspea-relay-model"></span></div>
+      <div class="row"><span class="label">Existing Relay Serial Number:</span> <span id="gspea-existing-serial"></span></div>
+      <div class="row"><span class="label">Required Card:</span> <span id="gspea-required-card"></span></div>
+    </div>
+
+    <!-- 2. Allocation Info -->
+    <div class="section">
+      <h4>2. Allocation Info</h4>
+      <div class="row"><span class="label">Allocated Card Serial:</span> <span id="gspea-allocated-serial"></span></div>
+      <div class="row"><span class="label">Allocation Date:</span> <span id="gspea-allocation-date"></span></div>
+    </div>
+
+    <!-- 3. Return Info -->
+    <div class="section">
+      <h4>3. Return Info</h4>
+      <div class="row"><span class="label">Return Product Name:</span> <span id="gspea-return-product-name"></span></div>
+      <div class="row"><span class="label">Return Product Serial No:</span> <span id="gspea-return-serial"></span></div>
+      <div class="row"><span class="label">Return Date:</span> <span id="gspea-return-date"></span></div>
+      <div class="row"><span class="label">Returner:</span> <span id="gspea-returner"></span></div>
+      
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider"></div>
+
+  <!-- Substation Part -->
+  <h3 style="text-decoration: underline; text-align: center;">Substation Part</h3>
+  <div class="section">
+    <div class="row"><span class="label">Request ID:</span> <span id="substation-request-id"></span></div>
+    <div class="row"><span class="label">Panel No:</span> <span id="substation-panel-no"></span></div>
+    <div class="row"><span class="label">Relay Model:</span> <span id="substation-relay-model"></span></div>
+    <div class="row"><span class="label">Existing Relay Serial Number:</span> <span id="substation-existing-serial"></span></div>
+    <div class="row"><span class="label">Required Card:</span> <span id="substation-required-card"></span></div>
+    <div class="row"><span class="label">Allocated Card Serial:</span> <span id="substation-allocated-serial"></span></div>
+    <div class="row"><span class="label">Allocation Date:</span> <span id="substation-allocation-date"></span></div>
+    <div class="row"><span class="label">Return Product Name:</span> <span id="substation-return-product-name"></span></div>
+    <div class="row"><span class="label">Return Product Serial No:</span> <span id="substation-return-serial"></span></div>
+	<div class="row"><span class="label">Return Location:</span> <span id="gspea-return-location"></span></div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script>
+  function populateFromStorage() {
+    const savedData = localStorage.getItem('allocation_data');
+    if (!savedData) return;
+
+    try {
+      const values = JSON.parse(savedData);
+
+      // Keys to update
+      const allKeys = [
+        // GSPEA fields
+        "gspea-request-id", "gspea-request-date", "gspea-requester-name", 
+        "gspea-substation-name", "gspea-panel-no", "gspea-relay-model",
+        "gspea-existing-serial", "gspea-required-card", "gspea-allocated-serial",
+        "gspea-allocation-date", "gspea-return-product-name", "gspea-return-serial",
+        "gspea-return-date", "gspea-returner", "gspea-return-location",
+
+        // Substation fields
+        "substation-request-id", "substation-panel-no", "substation-relay-model",
+        "substation-existing-serial", "substation-required-card", 
+        "substation-allocated-serial", "substation-allocation-date",
+        "substation-return-product-name", "substation-return-serial"
+      ];
+
+      // Fill spans
+      allKeys.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.textContent = values[id] || '';
+        }
+      });
+
+    } catch (e) {
+      console.error("Error loading saved data:", e);
+    }
+  }
+
+  window.onload = populateFromStorage;
+</script>
+
+</body>
+</html>

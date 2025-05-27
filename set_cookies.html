@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Set Allocation Data Cookie</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
+    .success {
+      color: green;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Relay Allocation Data Entry</h2>
+
+  <form id="dataForm">
+    <label>Request ID <input name="gspea-request-id" /></label>
+    <label>Request Date <input name="gspea-request-date" type="date" /></label>
+    <label>Requester Name <input name="gspea-requester-name" /></label>
+    <label>Substation Name <input name="gspea-substation-name" /></label>
+    <label>Panel No <input name="gspea-panel-no" /></label>
+    <label>Relay Model <input name="gspea-relay-model" /></label>
+    <label>Existing Relay Serial Number <input name="gspea-existing-serial" /></label>
+    <label>Required Card <input name="gspea-required-card" /></label>
+    <label>Allocated Card Serial <input name="gspea-allocated-serial" /></label>
+    <label>Allocation Date <input name="gspea-allocation-date" type="date" /></label>
+    <label>Return Product Name <input name="gspea-return-product-name" /></label>
+    <label>Return Product Serial No <input name="gspea-return-serial" /></label>
+    <label>Return Date <input name="gspea-return-date" type="date" /></label>
+    <label>Returner <input name="gspea-returner" /></label>
+    <label>Return Location <input name="gspea-return-location" /></label>
+  </form>
+
+  <button onclick="saveData()">💾 Save Data</button>
+  <div class="success" id="status"></div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+  <script>
+    function saveData() {
+      const form = document.getElementById('dataForm');
+      const data = {};
+
+      for (const input of form.elements) {
+        if (input.name) {
+          data[input.name] = input.value || "";
+        }
+      }
+
+      // Duplicate keys for substation part
+      data["substation-request-id"] = data["gspea-request-id"];
+      data["substation-panel-no"] = data["gspea-panel-no"];
+      data["substation-relay-model"] = data["gspea-relay-model"];
+      data["substation-existing-serial"] = data["gspea-existing-serial"];
+      data["substation-required-card"] = data["gspea-required-card"];
+      data["substation-allocated-serial"] = data["gspea-allocated-serial"];
+      data["substation-allocation-date"] = data["gspea-allocation-date"];
+      data["substation-return-product-name"] = data["gspea-return-product-name"];
+      data["substation-return-serial"] = data["gspea-return-serial"];
+
+      localStorage.setItem('allocation_data', JSON.stringify(data));
+      document.getElementById("status").textContent = "✅ Data saved to local storage!";
+    }
+  </script>
+
+</body>
+</html>
