@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Admission Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: url('image/background.svg') no-repeat center center fixed;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 250px;
+        }
+        
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            display: none;
+            background-color: #2ecc71;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .row {
+                flex-direction: column;
+            }
+            
+            .col {
+                width: 100%;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Student Admission Form</h1>
+            <p>Please fill out all the required information accurately</p>
+        </header>
+        
+        <div class="form-container">
+            <form id="admissionForm">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="studentName">Student Name *</label>
+                            <input type="text" id="studentName" name="studentName" required>
+                            <div class="error" id="studentNameError">Please enter student name</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="fatherName">Father's Name *</label>
+                            <input type="text" id="fatherName" name="fatherName" required>
+                            <div class="error" id="fatherNameError">Please enter father's name</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="motherName">Mother's Name *</label>
+                            <input type="text" id="motherName" name="motherName" required>
+                            <div class="error" id="motherNameError">Please enter mother's name</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required>
+                            <div class="error" id="phoneError">Please enter a valid phone number</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address *</label>
+                    <input type="text" id="address" name="address" required>
+                    <div class="error" id="addressError">Please enter address</div>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="instituteType">Institute Type *</label>
+                            <select id="instituteType" name="instituteType" required>
+                                <option value="">Select Institute Type</option>
+                                <option value="school">School</option>
+                                <option value="college">College</option>
+                                <option value="university">University</option>
+                                <option value="coaching">Coaching Center</option>
+                            </select>
+                            <div class="error" id="instituteTypeError">Please select institute type</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="instituteName">Institute Name *</label>
+                            <input type="text" id="instituteName" name="instituteName" required>
+                            <div class="error" id="instituteNameError">Please enter institute name</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="class">Class/Grade *</label>
+                            <input type="text" id="class" name="class" required>
+                            <div class="error" id="classError">Please enter class/grade</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="rollNo">Roll Number *</label>
+                            <input type="text" id="rollNo" name="rollNo" required>
+                            <div class="error" id="rollNoError">Please enter roll number</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="monthlyFee">Monthly Fee (₹) *</label>
+                            <input type="number" id="monthlyFee" name="monthlyFee" min="0" required>
+                            <div class="error" id="monthlyFeeError">Please enter monthly fee</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="referredBy">Referred By</label>
+                            <input type="text" id="referredBy" name="referredBy">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="button" class="reset-btn" id="resetBtn">Reset Form</button>
+                    <button type="submit" class="submit-btn">Submit Application</button>
+                </div>
+                
+                <div class="success-message" id="successMessage">
+                    Your application has been submitted successfully!
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('admissionForm');
+            const resetBtn = document.getElementById('resetBtn');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Form validation on submit
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // In a real application, you would send the data to a server here
+                    successMessage.style.display = 'block';
+                    form.reset();
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+                }
+            });
+            
+            // Reset form
+            resetBtn.addEventListener('click', function() {
+                form.reset();
+                hideAllErrors();
+                successMessage.style.display = 'none';
+            });
+            
+            // Validation functions
+            function validateForm() {
+                let isValid = true;
+                
+                // Validate student name
+                if (!validateRequiredField('studentName', 'studentNameError')) {
+                    isValid = false;
+                }
+                
+                // Validate father name
+                if (!validateRequiredField('fatherName', 'fatherNameError')) {
+                    isValid = false;
+                }
+                
+                // Validate mother name
+                if (!validateRequiredField('motherName', 'motherNameError')) {
+                    isValid = false;
+                }
+                
+                // Validate address
+                if (!validateRequiredField('address', 'addressError')) {
+                    isValid = false;
+                }
+                
+                // Validate phone
+                if (!validatePhone('phone', 'phoneError')) {
+                    isValid = false;
+                }
+                
+                // Validate institute type
+                if (!validateRequiredField('instituteType', 'instituteTypeError')) {
+                    isValid = false;
+                }
+                
+                // Validate institute name
+                if (!validateRequiredField('instituteName', 'instituteNameError')) {
+                    isValid = false;
+                }
+                
+                // Validate class
+                if (!validateRequiredField('class', 'classError')) {
+                    isValid = false;
+                }
+                
+                // Validate roll number
+                if (!validateRequiredField('rollNo', 'rollNoError')) {
+                    isValid = false;
+                }
+                
+                // Validate monthly fee
+                if (!validateMonthlyFee('monthlyFee', 'monthlyFeeError')) {
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
+            function validateRequiredField(fieldId, errorId) {
+                const field = document.getElementById(fieldId);
+                const error = document.getElementById(errorId);
+                
+                if (field.value.trim() === '') {
+                    error.style.display = 'block';
+                    field.style.borderColor = '#e74c3c';
+                    return false;
+                } else {
+                    error.style.display = 'none';
+                    field.style.borderColor = '#ddd';
+                    return true;
+                }
+            }
+            
+            function validatePhone(fieldId, errorId) {
+                const field = document.getElementById(fieldId);
+                const error = document.getElementById(errorId);
+                const phoneRegex = /^[0-9]{10}$/;
+                
+                if (!phoneRegex.test(field.value.trim())) {
+                    error.style.display = 'block';
+                    field.style.borderColor = '#e74c3c';
+                    return false;
+                } else {
+                    error.style.display = 'none';
+                    field.style.borderColor = '#ddd';
+                    return true;
+                }
+            }
+            
+            function validateMonthlyFee(fieldId, errorId) {
+                const field = document.getElementById(fieldId);
+                const error = document.getElementById(errorId);
+                
+                if (field.value.trim() === '' || parseFloat(field.value) <= 0) {
+                    error.style.display = 'block';
+                    field.style.borderColor = '#e74c3c';
+                    return false;
+                } else {
+                    error.style.display = 'none';
+                    field.style.borderColor = '#ddd';
+                    return true;
+                }
+            }
+            
+            function hideAllErrors() {
+                const errors = document.querySelectorAll('.error');
+                errors.forEach(error => {
+                    error.style.display = 'none';
+                });
+                
+                const inputs = document.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    input.style.borderColor = '#ddd';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

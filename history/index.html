@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paragoned Coaching Center - Student Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: url('image/background.svg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        
+        .container {
+            display: flex;
+            width: 900px;
+            height: 550px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(rgba(26, 42, 108, 0.8), rgba(178, 31, 31, 0.8));
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-icon {
+            font-size: 36px;
+            margin-right: 15px;
+            color: #fdbb2d;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .welcome-text {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .left-panel p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .features {
+            list-style: none;
+        }
+        
+        .features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .features i {
+            margin-right: 10px;
+            color: #fdbb2d;
+        }
+        
+        .right-panel {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h2 {
+            font-size: 28px;
+            color: #1a2a6c;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+        
+        .input-with-icon input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .input-with-icon input:focus {
+            outline: none;
+            border-color: #1a2a6c;
+            box-shadow: 0 0 0 2px rgba(26, 42, 108, 0.2);
+        }
+        
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+        }
+        
+        .forgot-password {
+            color: #1a2a6c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .login-btn:hover {
+            background: linear-gradient(to right, #15215e, #9c1b1b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .admin-contact {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .admin-contact a {
+            color: #1a2a6c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .admin-contact a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .floating-shapes .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .shape-1 {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 5%;
+            animation: float 15s infinite linear;
+        }
+        
+        .shape-2 {
+            width: 120px;
+            height: 120px;
+            bottom: 10%;
+            right: 5%;
+            animation: float 18s infinite linear reverse;
+        }
+        
+        .shape-3 {
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            left: 10%;
+            animation: float 12s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            50% {
+                transform: translate(20px, 20px) rotate(180deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                width: 90%;
+                height: auto;
+            }
+            
+            .left-panel {
+                padding: 30px;
+            }
+            
+            .floating-shapes {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="logo-text">Paragoned</div>
+            </div>
+            <h1 class="welcome-text">Welcome to Coaching Management Portal</h1>
+            <ul class="features">
+                <li><i class="fas fa-check-circle"></i> Admit Students</li>
+                <li><i class="fas fa-check-circle"></i> Fee Collection Entry</li>
+                <li><i class="fas fa-check-circle"></i> Financial Database Management</li>
+                <li><i class="fas fa-check-circle"></i> Track Student Progress</li>
+            </ul>
+        </div>
+        
+        <div class="right-panel">
+            <div class="login-header">
+                <h2>Official's Login</h2>
+                <p>Enter your credentials to access your account</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="Enter your username or email" required>
+                    </div>
+                    <div class="error-message" id="usernameError">Please enter a valid username or email</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="error-message" id="passwordError">Please enter your password</div>
+                </div>
+                
+                <div class="options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn">Login to Portal</button>
+                
+                <div class="admin-contact">
+                    Need an account or forgot password? <a href="#">Contact Administrator</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const usernameError = document.getElementById('usernameError');
+            const passwordError = document.getElementById('passwordError');
+            
+            // Form validation on submit
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let isValid = true;
+                
+                // Validate username
+                if (usernameInput.value.trim() === '') {
+                    usernameError.style.display = 'block';
+                    usernameInput.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    usernameError.style.display = 'none';
+                    usernameInput.style.borderColor = '#ddd';
+                }
+                
+                // Validate password
+                if (passwordInput.value.trim() === '') {
+                    passwordError.style.display = 'block';
+                    passwordInput.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    passwordError.style.display = 'none';
+                    passwordInput.style.borderColor = '#ddd';
+                }
+                
+                if (isValid) {
+                    // In a real application, you would send the data to a server here
+                    // For demonstration, we'll just show an alert
+                    alert('Login successful! Redirecting to student dashboard...');
+                    loginForm.reset();
+                    
+                    // In a real application, you would redirect to the dashboard
+                    // window.location.href = 'dashboard.html';
+                }
+            });
+            
+            // Clear errors when user starts typing
+            usernameInput.addEventListener('input', function() {
+                usernameError.style.display = 'none';
+                usernameInput.style.borderColor = '#ddd';
+            });
+            
+            passwordInput.addEventListener('input', function() {
+                passwordError.style.display = 'none';
+                passwordInput.style.borderColor = '#ddd';
+            });
+            
+            // Forgot password link
+            const forgotPassword = document.querySelector('.forgot-password');
+            forgotPassword.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Please contact the administrator for password reset assistance.');
+            });
+            
+            // Contact administrator link
+            const adminContact = document.querySelector('.admin-contact a');
+            adminContact.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Please email admin@paragonedcoaching.com or call +1 (555) 123-4567 for account assistance.');
+            });
+        });
+    </script>
+</body>
+</html>

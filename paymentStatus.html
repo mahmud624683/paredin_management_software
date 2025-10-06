@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Payment Status</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .search-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .search-btn {
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .search-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .student-info {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            display: none;
+        }
+        
+        .student-info h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .payment-table-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            display: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-not-applicable {
+            background-color: #bdc3c7;
+            color: #2c3e50;
+        }
+        
+        .status-unpaid {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .status-paid {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .pay-btn {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .pay-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .pay-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            display: none;
+        }
+        
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #bdc3c7;
+        }
+        
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            display: none;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Payment Modal Styles */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .payment-modal-content {
+            background-color: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .payment-modal-header {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .payment-modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .receipt {
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            
+        }
+        
+        .receipt-header {
+            text-align: center;
+            margin: 10px;
+            border-bottom: 1px solid #080000;
+        }
+        
+        .receipt-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .receipt-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .receipt-item {
+            margin-bottom: 2px;
+        }
+        
+        .receipt-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .receipt-value {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .receipt-amount {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #3498db;
+        }
+        
+        .receipt-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .signature-area {
+            text-align: center;
+        }
+        
+        .signature-line {
+            margin-top: 60px;
+            border-top: 1px solid #333;
+            width: 100%;
+        }
+        
+        .payment-modal-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            background-color: #f8f9fa;
+            flex-shrink: 0;
+        }
+        
+        .modal-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .print-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .print-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .cancel-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .search-input, .search-btn {
+                width: 100%;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            th, td {
+                padding: 10px 5px;
+            }
+            
+            .payment-modal-footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .modal-btn {
+                width: 100%;
+            }
+            
+            .receipt-details, .receipt-footer {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Print styles for 200mm x 140mm receipt */
+        @media print {
+            body * {
+                visibility: hidden;
+                margin: 0;
+                padding: 0;
+            }
+            
+            #printableReceipt, #printableReceipt * {
+                visibility: visible;
+            }
+            
+            #printableReceipt {
+                position: absolute;
+                left: 50%;
+                top: 20%;
+                transform: translate(-50%, -50%);
+                width: 200mm;
+                height: 140mm;
+                padding: 8mm;
+                background: white;
+                /*border: 1px solid #000;*/
+                box-sizing: border-box;
+            }
+            
+            .payment-modal, .payment-modal * {
+                display: none !important;
+            }
+            
+            #printableReceipt .receipt-header {
+                text-align: center;
+                margin-bottom: 6mm;
+                border-bottom: 1px solid #000;
+                padding-bottom: 3mm;
+            }
+            
+            #printableReceipt .receipt-logo {
+                width: 25mm;
+                height: 25mm;
+                margin: 0 auto 3mm;
+                background: linear-gradient(135deg, #3498db, #2c3e50);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 12mm;
+            }
+            
+            #printableReceipt .receipt-header h3 {
+                font-size: 7mm;
+                font-weight: bold;
+            }
+            
+            #printableReceipt .receipt-header p {
+                font-size: 4mm;
+            }
+            
+            #printableReceipt .receipt-details {
+                margin-bottom: 5mm;
+                grid-template-columns: 1fr 1fr;
+                gap: 3mm;
+                background: url('image/opequebg.jpg') no-repeat center center;
+                background-size: cover;
+            }
+            
+            #printableReceipt .receipt-item {
+                margin-bottom: 1mm;
+            }
+            
+            #printableReceipt .receipt-label {
+                font-size: 4mm;
+                font-weight: bold;
+            }
+            
+            #printableReceipt .receipt-value {
+                font-size: 4mm;
+            }
+            
+            #printableReceipt .receipt-amount {
+                font-size: 8mm;
+                margin: 5mm 0;
+                padding: 3mm;
+                border: 1px solid #000;
+                background: #f8f9fa;
+            }
+            
+            #printableReceipt .receipt-footer {
+                margin-top: 6mm;
+                grid-template-columns: 1fr 1fr;
+                gap: 5mm;
+            }
+            
+            #printableReceipt .signature-line {
+                margin-top: 15mm;
+                border-top: 1px solid #000;
+            }
+            
+            /* Ensure proper print layout */
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Student Payment Status</h1>
+            <p>Track and manage student monthly payments</p>
+        </header>
+        
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" id="studentIdInput" placeholder="Enter Student ID (e.g., STU-2023-001)">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+            <div class="error-message" id="errorMessage">
+                <!-- Error message will be inserted here -->
+            </div>
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Fetching student data...</p>
+            </div>
+        </div>
+        
+        <div class="no-data" id="noDataMessage">
+            <i class="fas fa-user-graduate"></i>
+            <h3>No Student Data</h3>
+            <p>Please search for a student to view their payment status</p>
+        </div>
+        
+        <div class="student-info" id="studentInfo">
+            <h2>Student Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Student Name</span>
+                    <span class="info-value" id="infoName">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Batch Name</span>
+                    <span class="info-value" id="infoBatch">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Batch Roll No</span>
+                    <span class="info-value" id="infoBatchRoll">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Student ID</span>
+                    <span class="info-value" id="infoStudentId">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">School Name</span>
+                    <span class="info-value" id="infoSchool">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Phone Number</span>
+                    <span class="info-value" id="infoPhone">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="payment-table-container" id="paymentTableContainer">
+            <table id="paymentTable">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Payment Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="paymentTableBody">
+                    <!-- Table rows will be generated dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="payment-modal-content">
+            <div class="payment-modal-header">
+                <h2>Payment Receipt</h2>
+                <p>Complete the payment process</p>
+            </div>
+            <div class="payment-modal-body">
+                <div class="form-group">
+                    <label for="collectorSelect">Select Collector</label>
+                    <select id="collectorSelect">
+                        <option value="">-- Select Collector --</option>
+                        <option value="Mr. Rahman">Mr. Rahman</option>
+                        <option value="Ms. Fatima">Ms. Fatima</option>
+                        <option value="Mr. Karim">Mr. Karim</option>
+                        <option value="Ms. Ayesha">Ms. Ayesha</option>
+                        <option value="Mr. Hasan">Mr. Hasan</option>
+                    </select>
+                </div>
+                
+                <div class="receipt" id="receiptContent">
+                    <div class="receipt-header">
+                        <div class="receipt-logo">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>EDU INSTITUTE</h3>
+                        <p>Payment Receipt</p>
+                    </div>
+                    <div class="receipt-details">
+                        <div class="receipt-item">
+                            <div class="receipt-label">Student Name</div>
+                            <div class="receipt-value" id="receiptName">-</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Student ID</div>
+                            <div class="receipt-value" id="receiptStudentId">-</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Batch</div>
+                            <div class="receipt-value" id="receiptBatch">-</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Month</div>
+                            <div class="receipt-value" id="receiptMonth">-</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Payment Date</div>
+                            <div class="receipt-value" id="receiptDate">-</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Receipt No</div>
+                            <div class="receipt-value" id="receiptNo">-</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Collector Name</div>
+                            <div class="receipt-value" id="receiptCollector">-</div>
+                        </div>
+                    </div>
+                    <div class="receipt-amount" id="receiptAmount">
+                        0 Taka
+                    </div>
+                </div>
+            </div>
+            <div class="payment-modal-footer">
+                <button class="modal-btn cancel-btn" id="cancelPaymentBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="modal-btn print-btn" id="printReceiptBtn">
+                    <i class="fas fa-print"></i> Print Receipt & Update Payment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden printable receipt for printing -->
+    <div id="printableReceipt" style="display: none;"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const studentIdInput = document.getElementById('studentIdInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const studentInfo = document.getElementById('studentInfo');
+            const paymentTableContainer = document.getElementById('paymentTableContainer');
+            const paymentTableBody = document.getElementById('paymentTableBody');
+            const noDataMessage = document.getElementById('noDataMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            // Payment modal elements
+            const paymentModal = document.getElementById('paymentModal');
+            const cancelPaymentBtn = document.getElementById('cancelPaymentBtn');
+            const printReceiptBtn = document.getElementById('printReceiptBtn');
+            const collectorSelect = document.getElementById('collectorSelect');
+            const printableReceipt = document.getElementById('printableReceipt');
+            
+            // Current payment context
+            let currentStudent = null;
+            let currentMonth = null;
+            let monthlyFee = 0;
+            
+            // Search for student
+            searchBtn.addEventListener('click', function() {
+                const studentId = studentIdInput.value.trim();
+                
+                if (!studentId) {
+                    showError('Please enter a Student ID');
+                    return;
+                }
+                
+                // Clear previous results and errors
+                hideData();
+                hideError();
+                
+                // Show loading state
+                showLoading();
+                searchBtn.disabled = true;
+                
+                // Simulate backend API call
+                fetchStudentData(studentId)
+                    .then(student => {
+                        // Success - display student data
+                        currentStudent = student;
+                        displayStudentInfo(student);
+                        displayPaymentTable(student.payments, student.monthlyFee);
+                        showData();
+                    })
+                    .catch(error => {
+                        // Error - show error message
+                        showError(error.message);
+                    })
+                    .finally(() => {
+                        // Always hide loading state
+                        hideLoading();
+                        searchBtn.disabled = false;
+                    });
+            });
+            
+            // Simulate backend API call
+            function fetchStudentData(studentId) {
+                return new Promise((resolve, reject) => {
+                    // Simulate network delay
+                    setTimeout(() => {
+                        // Mock database of students
+                        const students = {
+                            'STU-2023-001': {
+                                name: 'Rahim Ahmed',
+                                batch: 'Batch A-2023',
+                                batchRoll: '15',
+                                studentId: 'STU-2023-001',
+                                school: 'Dhaka University',
+                                phone: '+880 1712-345678',
+                                monthlyFee: 2500,
+                                payments: {
+                                    'January': 2500,
+                                    'February': 0,
+                                    'March': 2500,
+                                    'April': -1,
+                                    'May': 0,
+                                    'June': 2500,
+                                    'July': -1,
+                                    'August': 0,
+                                    'September': 2500,
+                                    'October': 0,
+                                    'November': 0,
+                                    'December': -1
+                                }
+                            },
+                            'STU-2023-002': {
+                                name: 'Fatima Begum',
+                                batch: 'Batch B-2023',
+                                batchRoll: '08',
+                                studentId: 'STU-2023-002',
+                                school: 'Chittagong College',
+                                phone: '+880 1812-987654',
+                                monthlyFee: 3000,
+                                payments: {
+                                    'January': 3000,
+                                    'February': 3000,
+                                    'March': 3000,
+                                    'April': 3000,
+                                    'May': 3000,
+                                    'June': 3000,
+                                    'July': -1,
+                                    'August': 3000,
+                                    'September': 3000,
+                                    'October': 3000,
+                                    'November': 0,
+                                    'December': -1
+                                }
+                            },
+                            'STU-2023-003': {
+                                name: 'Karim Uddin',
+                                batch: 'Batch C-2023',
+                                batchRoll: '22',
+                                studentId: 'STU-2023-003',
+                                school: 'Rajshahi University',
+                                phone: '+880 1912-456789',
+                                monthlyFee: 2000,
+                                payments: {
+                                    'January': 0,
+                                    'February': 0,
+                                    'March': 0,
+                                    'April': -1,
+                                    'May': 0,
+                                    'June': 0,
+                                    'July': -1,
+                                    'August': 0,
+                                    'September': 0,
+                                    'October': 0,
+                                    'November': 0,
+                                    'December': -1
+                                }
+                            }
+                        };
+                        
+                        if (students[studentId]) {
+                            resolve(students[studentId]);
+                        } else {
+                            reject(new Error(`Student with ID "${studentId}" not found in the database. Please check the Student ID and try again.`));
+                        }
+                    }, 1500); // Simulate network delay
+                });
+            }
+            
+            // Display student information
+            function displayStudentInfo(student) {
+                document.getElementById('infoName').textContent = student.name;
+                document.getElementById('infoBatch').textContent = student.batch;
+                document.getElementById('infoBatchRoll').textContent = student.batchRoll;
+                document.getElementById('infoStudentId').textContent = student.studentId;
+                document.getElementById('infoSchool').textContent = student.school;
+                document.getElementById('infoPhone').textContent = student.phone;
+                
+                studentInfo.style.display = 'block';
+            }
+            
+            // Display payment table
+            function displayPaymentTable(payments, fee) {
+                monthlyFee = fee;
+                
+                // Clear existing table rows
+                paymentTableBody.innerHTML = '';
+                
+                // Create rows for each month
+                Object.entries(payments).forEach(([month, amount]) => {
+                    const row = document.createElement('tr');
+                    
+                    // Month column
+                    const monthCell = document.createElement('td');
+                    monthCell.textContent = month;
+                    row.appendChild(monthCell);
+                    
+                    // Payment status column
+                    const statusCell = document.createElement('td');
+                    const statusBadge = document.createElement('span');
+                    
+                    if (amount === -1) {
+                        statusBadge.textContent = 'Not Applicable';
+                        statusBadge.className = 'status-badge status-not-applicable';
+                    } else if (amount === 0) {
+                        statusBadge.textContent = `Unpaid - ${monthlyFee} Taka`;
+                        statusBadge.className = 'status-badge status-unpaid';
+                    } else {
+                        statusBadge.textContent = `Paid - ${amount} Taka`;
+                        statusBadge.className = 'status-badge status-paid';
+                    }
+                    
+                    statusCell.appendChild(statusBadge);
+                    row.appendChild(statusCell);
+                    
+                    // Action column
+                    const actionCell = document.createElement('td');
+                    
+                    if (amount === 0) {
+                        const payButton = document.createElement('button');
+                        payButton.textContent = 'Pay Now';
+                        payButton.className = 'pay-btn';
+                        payButton.addEventListener('click', function() {
+                            openPaymentModal(month);
+                        });
+                        actionCell.appendChild(payButton);
+                    } else {
+                        actionCell.textContent = '-';
+                    }
+                    
+                    row.appendChild(actionCell);
+                    
+                    paymentTableBody.appendChild(row);
+                });
+                
+                paymentTableContainer.style.display = 'block';
+            }
+            
+            // Open payment modal
+            function openPaymentModal(month) {
+                currentMonth = month;
+                collectorSelect.value = '';
+                
+                // Update receipt information
+                document.getElementById('receiptName').textContent = currentStudent.name;
+                document.getElementById('receiptStudentId').textContent = currentStudent.studentId;
+                document.getElementById('receiptBatch').textContent = currentStudent.batch;
+                document.getElementById('receiptMonth').textContent = month;
+                document.getElementById('receiptDate').textContent = new Date().toLocaleDateString();
+                document.getElementById('receiptAmount').textContent = `${monthlyFee} Taka`;
+                document.getElementById('receiptCollector').textContent = '-';
+                
+                // Generate a random receipt number
+                const receiptNo = 'RCP-' + new Date().getTime().toString().slice(-6);
+                document.getElementById('receiptNo').textContent = receiptNo;
+                
+                // Show the modal
+                paymentModal.style.display = 'flex';
+            }
+            
+            // Close payment modal
+            function closePaymentModal() {
+                paymentModal.style.display = 'none';
+            }
+            
+            // Update collector name in receipt
+            collectorSelect.addEventListener('change', function() {
+                document.getElementById('receiptCollector').textContent = this.value;
+            });
+            
+            // Print receipt and update payment status
+            function printAndUpdatePayment() {
+                const collectorName = collectorSelect.value;
+                
+                if (!collectorName) {
+                    alert('Please select a collector name');
+                    return;
+                }
+                
+                // Create the printable receipt content
+                const receiptContent = `
+                    <div class="receipt-header">
+                        <h3>EDU INSTITUTE</h3>
+                        <p>Payment Receipt</p>
+                    </div>
+                    <div class="receipt-details">
+                        <div class="receipt-item">
+                            <div class="receipt-label">Student Name</div>
+                            <div class="receipt-value">${currentStudent.name}</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Student ID</div>
+                            <div class="receipt-value">${currentStudent.studentId}</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Batch</div>
+                            <div class="receipt-value">${currentStudent.batch}</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Month</div>
+                            <div class="receipt-value">${currentMonth}</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Payment Date</div>
+                            <div class="receipt-value">${new Date().toLocaleDateString()}</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Receipt No</div>
+                            <div class="receipt-value">RCP-${new Date().getTime().toString().slice(-6)}</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Collector Name</div>
+                            <div class="receipt-value">${collectorName}</div>
+                        </div>
+                        <div class="receipt-item">
+                            <div class="receipt-label">Collector Name</div>
+                            <div class="receipt-value">${monthlyFee} Taka</div>
+                        </div>
+                    </div>
+                    
+                    <div class="receipt-footer">
+                        <div class="signature-area">
+                            <div class="receipt-label">Authorized Signature</div>
+                            <div class="signature-line"></div>
+                        </div>
+                    </div>
+                `;
+                
+                // Set the printable receipt content
+                printableReceipt.innerHTML = receiptContent;
+                
+                // Update payment status in the backend (simulated)
+                updatePaymentStatusInBackend(currentStudent.studentId, currentMonth, monthlyFee)
+                    .then(() => {
+                        // Show the printable receipt for printing
+                        printableReceipt.style.display = 'block';
+                        
+                        // Print the receipt
+                        window.print();
+                        
+                        // Hide the printable receipt after printing
+                        setTimeout(() => {
+                            printableReceipt.style.display = 'none';
+                            closePaymentModal();
+                            // Refresh the data to show updated payment status
+                            searchBtn.click();
+                        }, 500);
+                    })
+                    .catch(error => {
+                        alert('Error updating payment status: ' + error.message);
+                    });
+            }
+            
+            // Simulate updating payment status in backend
+            function updatePaymentStatusInBackend(studentId, month, amount) {
+                return new Promise((resolve) => {
+                    // Simulate API call delay
+                    setTimeout(() => {
+                        console.log(`Payment updated for ${studentId}, ${month}: ${amount} Taka`);
+                        resolve();
+                    }, 500);
+                });
+            }
+            
+            // Event listeners for modal buttons
+            cancelPaymentBtn.addEventListener('click', closePaymentModal);
+            printReceiptBtn.addEventListener('click', printAndUpdatePayment);
+            
+            // Show error message
+            function showError(message) {
+                errorMessage.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+                errorMessage.style.display = 'block';
+                hideData();
+            }
+            
+            // Hide error message
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+            
+            // Show loading spinner
+            function showLoading() {
+                loadingSpinner.style.display = 'block';
+            }
+            
+            // Hide loading spinner
+            function hideLoading() {
+                loadingSpinner.style.display = 'none';
+            }
+            
+            // Show data sections
+            function showData() {
+                noDataMessage.style.display = 'none';
+                studentInfo.style.display = 'block';
+                paymentTableContainer.style.display = 'block';
+            }
+            
+            // Hide data sections
+            function hideData() {
+                noDataMessage.style.display = 'block';
+                studentInfo.style.display = 'none';
+                paymentTableContainer.style.display = 'none';
+            }
+            
+            // Initialize page
+            hideData();
+            
+            // Allow searching with Enter key
+            studentIdInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchBtn.click();
+                }
+            });
+            
+            // Demo: Auto-search for a student on page load for demo purposes
+            setTimeout(function() {
+                studentIdInput.value = 'STU-2023-001';
+                searchBtn.click();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
